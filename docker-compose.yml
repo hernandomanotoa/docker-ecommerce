@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+
+  # Web Server Service
+  nginx:
+    image: nginx:alpine
+    container_name: mv_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./laravel-multi-vendor-e-commerce-application:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+      - db
+
+  #Database Service
+  db:
+    image : mysql
+    container_name : mv_mysql
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: online_shop
+      MYSQL_ROOT_PASSWORD: password
+  # db:
+  #   image: postgres
+  #   container_name: postgres
+  #   volumes:
+  #     - ./postgresql/data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   environment: 
+  #     POSTGRES_DB: online_shop2
+  #     POSTGRES_USER: root 
+  #     POSTGRES_PASSWORD: password 
+
+  # Application Service
+  app:
+    container_name: mv_app
+    build: 
+      context: ./php
+      dockerfile: Dockerfile
+    volumes:
+      - ./laravel-multi-vendor-e-commerce-application:/var/www
+      - ./php/files:/usr/local/etc/php docker 
+      # cp app:/usr/local/etc/php ./php/files
+    ports:
+      - "9000:9000"
+    working_dir: /var/www
+
+  # phpMyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: mv_phpmyadmin
+    ports:
+      - "3400:80"
+    depends_on:
+      - db
+  # pgadmin2:
+  #   image: dpage/pgadmin4
+  #   container_name: pgAdmin2
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     - db 
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: hernandomanotoa@hotmail.com
+  #     PGADMIN_DEFAULT_PASSWORD: password 
+  
+
+  # cloudbeaver:
+  #   image: dbeaver/cloudbeaver:latest
+  #   container_name: mv_cloudbeaver
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8200:8978"
+  #   volumes:
+  #     - ./workspace:/opt/cloudbeaver/workspace
+

@@ -1,0 +1,10 @@
+.DS_Store
+mysql
+postgresql
+/laravel-multi-vendor-e-commerce-application
+/workspace
+.phpunit.result.cache
+/.idea
+/.vscode
+
+
